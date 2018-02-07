@@ -1,7 +1,7 @@
 require "http/client"
 require "http/server"
 
-PORT_LISTEN      = 8080
+PORT_LISTEN      = ENV["PORT"]
 TELEGRAM_KEY     = ENV["TELEGRAM_KEY"]
 TELEGRAM_CHANNEL = ENV["TELEGRAM_CHANNEL"]
 
