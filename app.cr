@@ -1,9 +1,18 @@
 require "http/client"
 require "http/server"
+require "option_parser"
 
-PORT_LISTEN      = ENV["PORT"].to_i
 TELEGRAM_KEY     = ENV["TELEGRAM_KEY"]
 TELEGRAM_CHANNEL = ENV["TELEGRAM_CHANNEL"]
+
+bind = "0.0.0.0"
+port = 3000
+
+OptionParser.parse! do |opts|
+  opts.on("-p PORT", "--port PORT", "define port to run server") do |opt|
+    port = opt.to_i
+  end
+end
 
 def send_tg_message(text)
   headers = HTTP::Headers.new()
@@ -24,7 +33,7 @@ def send_tg_message(text)
   )
 end
 
-server = HTTP::Server.new(PORT_LISTEN) do |context|
+server = HTTP::Server.new(bind, port) do |context|
   context.response.content_type = "text/plain"
   context.response.print("Hello world, got #{context.request.path}!")
 
@@ -46,5 +55,5 @@ server = HTTP::Server.new(PORT_LISTEN) do |context|
   send_tg_message([time, method, resource, headers, body].join("\n"))
 end
 
-puts "Listening on port #{PORT_LISTEN}"
+puts "Listening on #{bind}:#{port}"
 server.listen
